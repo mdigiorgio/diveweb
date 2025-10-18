@@ -2,10 +2,8 @@
 
 "use client";
 
-import React, { useState } from "react";
-import { Box, Toolbar, Typography } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
+import React from "react";
+import { Box, Typography } from "@mui/material";
 import { APPBAR_HEIGHT } from "@/components/NavBar";
 
 // Sections
@@ -14,9 +12,6 @@ import GallerySection from "./gallery/GallerySection";
 import ReviewsContent from "./reviews/ReviewsContent";
 
 export default function LandingPage() {
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const open: boolean = Boolean(anchorEl);
-
   return (
     <Box>
       {/* Sections */}
@@ -51,7 +46,7 @@ export default function LandingPage() {
             Your browser does not support the video tag.
           </video>
 
-          {/* Overlay with your text */}
+          {/* Overlay text on video */}
           <Box
             sx={{
               position: "relative",
@@ -76,7 +71,6 @@ export default function LandingPage() {
           </Box>
         </section>
 
-        {/* About: auto height, will grow */}
         <section
           id="about"
           style={{
@@ -87,7 +81,6 @@ export default function LandingPage() {
           <AboutSection />
         </section>
 
-        {/* Gallery: auto height */}
         <section
           id="gallery"
           style={{
@@ -98,7 +91,6 @@ export default function LandingPage() {
           <GallerySection />
         </section>
 
-        {/* Reviews: auto height */}
         <section
           id="reviews"
           style={{

@@ -503,7 +503,7 @@ export default function ReviewsContent(): React.ReactElement {
                 <Rating
                   name="stars"
                   value={stars}
-                  onChange={(e, newValue) => setStars(newValue || 1)}
+                  onChange={(_, newValue) => setStars(newValue || 1)}
                 />
                 <TextField
                   label="Leave a review"

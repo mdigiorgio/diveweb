@@ -1,6 +1,6 @@
 // src/styles/commonStyles.tsx
 
-import ReactMarkdown, { Components } from "react-markdown";
+import { Components } from "react-markdown";
 import { SxProps, Theme } from "@mui/material/styles";
 import { Typography } from "@mui/material";
 
