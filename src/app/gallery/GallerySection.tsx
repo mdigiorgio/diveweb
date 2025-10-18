@@ -68,79 +68,77 @@ export default function GallerySection(): React.ReactElement {
   }, [API_KEY, UPLOADS_PLAYLIST_ID]);
 
   return (
-    <Box id="gallery" sx={{ py: 8 }}>
-            {/* @ts-ignore: Assuming SectionTitle is a valid component */}
+    <Container maxWidth="lg">
+      {/* @ts-ignore: Assuming SectionTitle is a valid component */}
       <SectionTitle>Gallery 🎬</SectionTitle>
-      <Container maxWidth="lg">
-        {loading ? (
-          <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
-                        <CircularProgress />
-          </Box>
-        ) : videos.length === 0 ? (
-          <Typography
-            variant="h6"
-            color="text.secondary"
-            textAlign="center"
-            sx={{ py: 6 }}
-          >
-                        No recent videos available. Please check the API key and
-            playlist ID.          
-          </Typography>
-        ) : (
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "center",
-              gap: 4, // Use the 'gap' property for consistent spacing
-            }}
-          >
-            {videos.map((video: YouTubeVideo, idx: number) => (
-              <Box
-                key={idx}
-                sx={{
-                  // 1. Force items to take calculated width
-                  flexBasis: { xs: "100%", sm: "45%", md: FLEX_BASIS_SIZE },
-                  flexGrow: 0,
-                  flexShrink: 0, // 2. Set internal layout to vertical
 
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
+      {loading ? (
+        <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
+          <CircularProgress />
+        </Box>
+      ) : videos.length === 0 ? (
+        <Typography
+          variant="h6"
+          color="text.secondary"
+          textAlign="center"
+          sx={{ py: 6 }}
+        >
+          No recent videos available. Please check the API key and playlist ID.
+        </Typography>
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: 4, // Use the 'gap' property for consistent spacing
+          }}
+        >
+          {videos.map((video: YouTubeVideo, idx: number) => (
+            <Box
+              key={idx}
+              sx={{
+                // 1. Force items to take calculated width
+                flexBasis: { xs: "100%", sm: "45%", md: FLEX_BASIS_SIZE },
+                flexGrow: 0,
+                flexShrink: 0, // 2. Set internal layout to vertical
+
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Box
+                sx={{
+                  position: "relative",
+                  width: "100%", // Takes 100% of the calculated flex-basis width
+                  // 3. Guarantee 16:9 Aspect Ratio (56.25% height relative to width)
+                  paddingBottom: "56.25%",
+                  borderRadius: 2,
+                  overflow: "hidden",
+                  boxShadow: 3, // Increased shadow for better separation
                 }}
               >
-                <Box
-                  sx={{
-                    position: "relative",
-                    width: "100%", // Takes 100% of the calculated flex-basis width
-                    // 3. Guarantee 16:9 Aspect Ratio (56.25% height relative to width)
-                    paddingBottom: "56.25%",
-                    borderRadius: 2,
-                    overflow: "hidden",
-                    boxShadow: 3, // Increased shadow for better separation
+                <iframe
+                  src={`https://www.youtube.com/embed/${video.snippet.resourceId.videoId}?rel=0`}
+                  title={video.snippet.title}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
                   }}
-                >
-                  <iframe
-                    src={`https://www.youtube.com/embed/${video.snippet.resourceId.videoId}?rel=0`}
-                    title={video.snippet.title}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                </Box>
+                />
               </Box>
-            ))}
-          </Box>
-        )}
-      </Container>
-    </Box>
+            </Box>
+          ))}
+        </Box>
+      )}
+    </Container>
   );
 }

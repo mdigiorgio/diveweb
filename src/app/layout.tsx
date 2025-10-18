@@ -5,7 +5,7 @@ import React from "react";
 import { Box } from "@mui/material";
 
 import Footer from "@/components/Footer";
-import { NavBar, APPBAR_HEIGHT } from "@/components/NavBar";
+import { NavBar } from "@/components/NavBar";
 import ThemeWrapper from "@/components/ThemeWrapper";
 
 // Define the Metadata Type (Next.js standard)

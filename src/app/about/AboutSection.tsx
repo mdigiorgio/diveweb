@@ -2,17 +2,17 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react"; // Added useState, useEffect
+import React, { useState, useEffect } from "react";
 import {
   Avatar,
   Box,
   Card,
   CardContent,
+  CircularProgress,
   Container,
   Link,
   Stack,
   Typography,
-  CircularProgress, // Added CircularProgress
 } from "@mui/material";
 // @ts-ignore: Masonry component from @mui/lab typically doesn't need explicit type imports
 import { Masonry } from "@mui/lab";
@@ -335,43 +335,41 @@ export default function AboutSection(): React.ReactElement {
   }
 
   return (
-    <Box id="about">
+    <Container maxWidth="lg">
       {/* @ts-ignore: Assuming SectionTitle is a valid component */}
       <SectionTitle>About Me</SectionTitle>
 
-      <Container maxWidth="lg">
-        {/* @ts-ignore: Assuming StoryCard is a valid component */}
-        <StoryCard />
+      {/* @ts-ignore: Assuming StoryCard is a valid component */}
+      <StoryCard />
 
-        {/* Education & Certifications */}
-        <Card variant="outlined" sx={{ mb: 6, ...cardStyle }}>
-          <CardContent>
-            <Typography variant="h5" gutterBottom>
-              Education & Certifications
-            </Typography>
-            {/* Masonry is wrapped under the isClient check */}
-            <Masonry columns={{ xs: 1, sm: 2, md: 2 }} spacing={2}>
-              {education.map((e: EducationItem, idx: number) => (
-                <EducationCard key={idx} {...e} />
-              ))}
-            </Masonry>
-          </CardContent>
-        </Card>
-
-        {/* Work + Languages Row */}
-        <Stack direction={{ xs: "column", md: "row" }} spacing={4}>
-          <Box flex={1}>
-            {work.map((w: WorkItem, idx: number) => (
-              <WorkCard key={idx} {...w} />
+      {/* Education & Certifications */}
+      <Card variant="outlined" sx={{ mb: 6, ...cardStyle }}>
+        <CardContent>
+          <Typography variant="h5" gutterBottom>
+            Education & Certifications
+          </Typography>
+          {/* Masonry is wrapped under the isClient check */}
+          <Masonry columns={{ xs: 1, sm: 2, md: 2 }} spacing={2}>
+            {education.map((e: EducationItem, idx: number) => (
+              <EducationCard key={idx} {...e} />
             ))}
-          </Box>
+          </Masonry>
+        </CardContent>
+      </Card>
 
-          <Box flex={1}>
-            {/* @ts-ignore: Assuming LanguagesCard is a valid component */}
-            <LanguagesCard />
-          </Box>
-        </Stack>
-      </Container>
-    </Box>
+      {/* Work + Languages Row */}
+      <Stack direction={{ xs: "column", md: "row" }} spacing={4}>
+        <Box flex={1}>
+          {work.map((w: WorkItem, idx: number) => (
+            <WorkCard key={idx} {...w} />
+          ))}
+        </Box>
+
+        <Box flex={1}>
+          {/* @ts-ignore: Assuming LanguagesCard is a valid component */}
+          <LanguagesCard />
+        </Box>
+      </Stack>
+    </Container>
   );
 }

@@ -4,26 +4,35 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "target": "ES2017",
+
+    "target": "ES2022",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
+
     "strict": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "incremental": true,
+
+    "allowJs": false,
+
     "module": "esnext",
-    "esModuleInterop": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
+    "esModuleInterop": true,
     "isolatedModules": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "incremental": true,
     "jsx": "preserve",
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+
+    // --- Next.js Integration ---
+    "plugins": [{ "name": "next" }]
   },
+
   "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx"],
+
   "exclude": ["node_modules"]
 }

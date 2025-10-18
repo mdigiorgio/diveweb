@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "npm run lint",
+    "*.{ts,tsx}": [
+      "eslint --fix",
       "npm run format"
     ]
   },
@@ -12,9 +12,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
+    "lint": "eslint --ext .ts,.tsx .",
     "format": "prettier --write .",
     "format-check": "prettier --check .",
+    "type-check": "tsc --noEmit",
+    "check": "npm run lint && npm run type-check",
     "prepare": "husky"
   },
   "dependencies": {
@@ -37,18 +39,25 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@eslint/js": "^9.38.0",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^24.7.2",
+    "@types/node": "^24.8.1",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
     "autoprefixer": "^10.4.21",
-    "eslint": "^9",
+    "eslint": "^9.38.0",
     "eslint-config-next": "15.5.3",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.4.0",
     "husky": "^9.1.7",
+    "jiti": "^2.6.1",
     "lint-staged": "^16.2.4",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "tailwindcss": "^4.1.13",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.1"
   }
 }

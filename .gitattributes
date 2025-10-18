@@ -1,0 +1,49 @@
+# Enforce consistent line endings across all systems
+* text=auto eol=lf
+
+# Treat all source code files as text and normalize line endings
+*.js     text eol=lf
+*.ts     text eol=lf
+*.tsx    text eol=lf
+*.jsx    text eol=lf
+*.json   text eol=lf
+*.css    text eol=lf
+*.scss   text eol=lf
+*.md     text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+
+# Image files are binary
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.webp   binary
+*.ico    binary
+# SVGs are text-based but shouldn't be normalized as binary
+*.svg    text
+
+# Font and media files as binary
+*.ttf    binary
+*.woff   binary
+*.woff2  binary
+*.mp4    binary
+*.mov    binary
+*.mp3    binary
+
+# Ignore diffs for certain file types
+*.lock   -diff
+*.min.js -diff
+*.min.css -diff
+*.map    -diff
+
+# Mark configuration and environment files as text
+*.env    text eol=lf
+*.env.*  text eol=lf
+
+# Documentation files
+*.md text eol=lf diff=markdown
+
+# Default behavior for GitHub linguist (language statistics)
+# Treat files in `public` as not source code
+public/* linguist-vendored

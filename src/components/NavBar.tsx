@@ -8,7 +8,6 @@ import {
   Box,
   Button,
   Toolbar,
-  Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -25,7 +24,7 @@ interface INavLinks {
   path: string;
 }
 
-// Only for scroll tracking logic (must match IDs in src/app/page.tsx)
+// Only scroll tracking logic (must match IDs in src/app/page.tsx)
 const scrollableSections: Section[] = [
   { id: "home", label: "Home" },
   { id: "about", label: "About" },
@@ -49,43 +48,29 @@ export const NavBar: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  // --- SCROLL CHECKER (For highlighting active link) ---
+  // --- SCROLL CHECKER: Updates active link as you scroll ---
   const checkScrollPosition = useCallback((): void => {
-    // Only run scroll check on the landing page
-    if (typeof window === "undefined" || window.location.pathname !== "/") {
+    if (typeof window === "undefined" || window.location.pathname !== "/")
       return;
-    }
 
-    // Scroll position + Offset (to account for fixed header)
-    const scrollY: number = window.scrollY + 80;
-
+    const scrollY = window.scrollY + (isMobile ? 100 : APPBAR_HEIGHT + 50);
     let newActiveSection: string | null = null;
 
-    // Check sections from the bottom up
     for (let i = scrollableSections.length - 1; i >= 0; i--) {
       const sec: Section = scrollableSections[i];
       const element: HTMLElement | null = document.getElementById(sec.id);
-
-      if (element) {
-        if (scrollY >= element.offsetTop) {
-          newActiveSection = sec.id;
-          break; // Found the highest visible section, break the loop
-        }
+      if (element && scrollY >= element.offsetTop) {
+        newActiveSection = sec.id;
+        break; // Found the highest visible section, break the loop
       }
     }
 
-    if (newActiveSection) {
-      setActiveSection((currentActiveSection) => {
-        if (newActiveSection && newActiveSection !== currentActiveSection) {
-          return newActiveSection;
-        }
-        return currentActiveSection; // Keep the current value
-      });
+    if (newActiveSection && newActiveSection !== activeSection) {
+      setActiveSection(newActiveSection);
     } else if (window.scrollY < APPBAR_HEIGHT) {
-      // Special case: if at the very top of the page
       setActiveSection("home");
     }
-  }, []);
+  }, [activeSection, isMobile]);
 
   // --- NAVIGATION HANDLER (Handles both smooth scroll and page change) ---
   const handleNavigation = (path: string, id: string) => {
@@ -102,39 +87,38 @@ export const NavBar: React.FC = () => {
         setActiveSection(id);
 
         // 2. Perform the smooth scroll
-        const offset: number = APPBAR_HEIGHT;
+        const offset: number = isMobile ? 100 : APPBAR_HEIGHT + 50;
         const bodyRect: number = document.body.getBoundingClientRect().top;
         const elementRect: number = element.getBoundingClientRect().top;
         const elementPosition: number = elementRect - bodyRect;
         const offsetPosition: number = elementPosition - offset;
 
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: "smooth",
-        });
+        window.scrollTo({ top: offsetPosition, behavior: "smooth" });
 
         // 3. Re-run the check after a delay to ensure accurate highlighting
-        setTimeout(() => {
-          checkScrollPosition();
-        }, 500);
+        setTimeout(() => checkScrollPosition(), 500);
       }
     } else {
-      // Scenario 2: Absolute Navigation (For /terms, /privacy, or when linking to a section from a subpage)
+      // Scenario 2: Absolute Navigation (For /terms, /privacy, or when
+      // linking to a section from a subpage)
       window.location.href = path;
     }
   };
 
-  // --- EFFECT: Attach Scroll Event Listener ---
+  // --- EFFECT: Listen for manual scroll + smooth offset behavior ---
   useEffect(() => {
-    // 1. Attach the primary scroll listener
-    window.addEventListener("scroll", checkScrollPosition);
+    const handleSmoothScroll = () => {
+      // Throttle the scroll checks slightly for performance
+      window.requestAnimationFrame(() => {
+        checkScrollPosition();
+      });
+    };
 
-    // 2. Initial check on mount
+    window.addEventListener("scroll", handleSmoothScroll);
     checkScrollPosition();
 
-    // 3. Cleanup
     return () => {
-      window.removeEventListener("scroll", checkScrollPosition);
+      window.removeEventListener("scroll", handleSmoothScroll);
     };
   }, [checkScrollPosition]);
 
@@ -147,6 +131,7 @@ export const NavBar: React.FC = () => {
           background: "linear-gradient(135deg, #004d70, #0096C7, #a2d2ff)",
           boxShadow: 6,
           height: { xs: 56, sm: APPBAR_HEIGHT },
+          transition: "all 0.3s ease-in-out",
         }}
       >
         <Toolbar>
@@ -161,33 +146,36 @@ export const NavBar: React.FC = () => {
               width: "auto",
               mr: 2,
               cursor: "pointer",
+              transition: "transform 0.2s ease",
+              "&:hover": { transform: "scale(1.05)" },
             }}
           />
 
           {/* 2. Navigation Links */}
           <Box sx={{ display: "flex", flexGrow: 1 }}>
-            {navLinks.map((item: INavLinks) => (
+            {navLinks.map((item) => (
               <Button
                 key={item.id}
                 // Pass both path (for navigation) and id (for smooth scroll)
                 onClick={() => handleNavigation(item.path, item.id)}
                 sx={{
-                  // Base styles
                   color: "#fff",
-                  fontSize: { xs: "0.7rem", sm: "1.1rem" },
-                  fontWeight: 600,
+                  fontSize: { xs: "0.8rem", sm: "1rem" },
+                  fontWeight: item.id === activeSection ? 800 : 600,
                   px: { xs: 1, sm: 1.5 },
-                  whiteSpace: "nowrap", // Prevent wrapping on small screens
-
-                  // Highlighting state (Only highlight for scrollable sections)
-                  ...(item.id === activeSection &&
-                    scrollableSections.some((s) => s.id === item.id) && {
-                      fontWeight: 800,
-                      borderTop: "2px solid",
-                      borderBottom: "2px solid",
-                    }),
-
-                  "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.15)" },
+                  whiteSpace: "nowrap",
+                  borderTop:
+                    item.id === activeSection
+                      ? "2px solid #fff"
+                      : "2px solid transparent",
+                  borderBottom:
+                    item.id === activeSection
+                      ? "2px solid #fff"
+                      : "2px solid transparent",
+                  transition: "all 0.25s ease-in-out",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 255, 255, 0.15)",
+                  },
                 }}
               >
                 {item.label}
