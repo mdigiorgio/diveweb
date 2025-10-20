@@ -150,44 +150,38 @@ function ReviewsList({
     const slider = sliderRef.current;
     if (!slider) return;
 
-    // Find the width of a single item including margin
-    const itemElement = slider.querySelector(".review-item-card");
+    const itemElement = slider.querySelector(
+      ".review-item-card",
+    ) as HTMLElement | null;
     if (!itemElement) return;
 
-    const htmlItemElement = itemElement as HTMLElement;
-    const MARGIN_SIZE_PX: number = 40;
-    // Item width (including its padding) + margin/gap
-    const distance = htmlItemElement.offsetWidth + MARGIN_SIZE_PX;
+    const MARGIN_SIZE_PX = 40;
+    const distance = itemElement.offsetWidth + MARGIN_SIZE_PX;
 
-    slider.scrollBy({
-      left: distance * direction,
-      behavior: "smooth",
-    });
+    slider.scrollBy({ left: distance * direction, behavior: "smooth" });
+
+    // Force update after scroll finishes (to re-enable the back button)
+    setTimeout(updateButtonState, 400);
   };
 
   // --- 3. Effects (Mount, Scroll, and Resize) ---
   useEffect(() => {
     const slider = sliderRef.current;
+    if (!slider) return;
 
-    // Initial state update on mount
-    // Run this inside a timeout to ensure all DOM elements are rendered and sized correctly
-    const checkTimeout = setTimeout(updateButtonState, 100);
+    const handle = () => updateButtonState();
 
-    if (slider) {
-      // Attach listener for user scrolling
-      slider.addEventListener("scroll", updateButtonState);
-    }
+    slider.addEventListener("scroll", handle);
+    window.addEventListener("resize", handle);
 
-    // Attach listener for window resize (as widths change)
-    window.addEventListener("resize", updateButtonState);
+    // Call once immediately after mount and after reviews change
+    handle();
 
-    // Cleanup
     return () => {
-      clearTimeout(checkTimeout);
-      if (slider) slider.removeEventListener("scroll", updateButtonState);
-      window.removeEventListener("resize", updateButtonState);
+      slider.removeEventListener("scroll", handle);
+      window.removeEventListener("resize", handle);
     };
-  }, [updateButtonState]);
+  }, [reviews.length, updateButtonState]);
 
   if (loading) {
     return (
