@@ -110,6 +110,9 @@ export default function ReviewsContent(): React.ReactElement {
     setMessage("");
     setStars(5);
     setLoading(false);
+
+    // Refresh list
+    await fetchReviews();
   };
 
   // --- Auth redirect helpers ---
