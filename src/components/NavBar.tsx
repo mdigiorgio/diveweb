@@ -34,7 +34,7 @@ const scrollableSections: Section[] = [
 
 // All navigation links, using absolute paths for cross-page navigation
 const navLinks: INavLinks[] = [
-  { id: "home", label: "Home", path: "/" },
+  { id: "home", label: "Home", path: "/#home" },
   { id: "about", label: "About", path: "/#about" },
   { id: "gallery", label: "Gallery", path: "/#gallery" },
   { id: "reviews", label: "Reviews", path: "/#reviews" },
@@ -53,7 +53,7 @@ export const NavBar: React.FC = () => {
     if (typeof window === "undefined" || window.location.pathname !== "/")
       return;
 
-    const scrollY = window.scrollY + (isMobile ? 100 : APPBAR_HEIGHT + 50);
+    const scrollY = window.scrollY + (isMobile ? 100 : APPBAR_HEIGHT + 80);
     let newActiveSection: string | null = null;
 
     for (let i = scrollableSections.length - 1; i >= 0; i--) {
@@ -96,7 +96,7 @@ export const NavBar: React.FC = () => {
         window.scrollTo({ top: offsetPosition, behavior: "smooth" });
 
         // 3. Re-run the check after a delay to ensure accurate highlighting
-        setTimeout(() => checkScrollPosition(), 500);
+        setTimeout(() => checkScrollPosition(), 150);
       }
     } else {
       // Scenario 2: Absolute Navigation (For /terms, /privacy, or when

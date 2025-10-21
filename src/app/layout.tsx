@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { NavBar } from "@/components/NavBar";
 import ThemeWrapper from "@/components/ThemeWrapper";
 import { UserProvider } from "@auth0/nextjs-auth0/client"; // Works in Next.js 13-15 App Router
+import { ScrollToHash } from "@/components/ScrollToHash";
 
 import type { Metadata } from "next";
 
@@ -30,6 +31,7 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <UserProvider>
           <ThemeWrapper>
+            <ScrollToHash />
             <NavBar />
             <Box
               sx={{
