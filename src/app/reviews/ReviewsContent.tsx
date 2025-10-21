@@ -15,7 +15,6 @@ import {
   Typography,
 } from "@mui/material";
 
-import { useRouter } from "next/navigation";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { supabase } from "@/lib/supabaseClient";
 // @ts-ignore
@@ -33,13 +32,20 @@ interface Review {
 }
 
 export default function ReviewsContent(): React.ReactElement {
-  const router = useRouter();
-  const { user, isLoading: authLoading } = useUser();
+  const { user, loginWithPopup, logout, isLoading: authLoading } = useUser();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [stars, setStars] = useState<number | null>(5);
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  // --- Scroll to #review-box after login/logout ---
+  useEffect(() => {
+    if (window.location.hash === "#review-box") {
+      const el = document.querySelector("#review-box");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [user]); // runs again after login
 
   // --- Fetch reviews from Supabase ---
   const fetchReviews = useCallback(async () => {
@@ -112,15 +118,22 @@ export default function ReviewsContent(): React.ReactElement {
     setLoading(false);
   };
 
-  // --- Auth redirect helpers ---
-  const handleLogin = () => {
-    const returnTo: string = `${window.location.origin}/#review-box`;
-    router.push(`/api/auth/login?returnTo=${returnTo}`);
+  // --- Auth handlers ---
+  const handleLogin = async () => {
+    try {
+      await loginWithPopup();
+      // Supabase session after login
+      await fetch("/api/supabase-login", {
+        method: "POST",
+        body: JSON.stringify({ email: user?.email }),
+      });
+    } catch (err) {
+      console.error("Login failed:", err);
+    }
   };
 
   const handleLogout = () => {
-    const returnTo: string = `${window.location.origin}/#review-box`;
-    router.push(`/api/auth/logout?returnTo=${returnTo}`);
+    logout({ logoutParams: { returnTo: window.location.origin } });
   };
 
   return (
@@ -130,7 +143,7 @@ export default function ReviewsContent(): React.ReactElement {
       {/* Reviews List */}
       <ReviewsList reviews={reviews} loading={loading} error={error} />
 
-      {/* Show global error if present */}
+      {/* Global error */}
       {error && (
         <Typography
           color="error"
