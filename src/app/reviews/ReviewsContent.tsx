@@ -41,14 +41,6 @@ export default function ReviewsContent(): React.ReactElement {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // --- Scroll to #reviews if returning from login/logout ---
-  useEffect(() => {
-    if (window.location.hash === "#reviews") {
-      const el = document.querySelector("#reviews");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }
-  }, []);
-
   // --- Fetch reviews from Supabase ---
   const fetchReviews = useCallback(async () => {
     setLoading(true);
