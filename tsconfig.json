@@ -8,16 +8,21 @@
     "target": "ES2022",
     "lib": ["dom", "dom.iterable", "esnext"],
 
+    // --- Strictness ---
     "strict": true,
     "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitThis": true,
+    "noImplicitOverride": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
 
+    // --- JS / Module Behavior ---
     "allowJs": false,
-
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
@@ -31,8 +36,6 @@
     // --- Next.js Integration ---
     "plugins": [{ "name": "next" }]
   },
-
   "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx"],
-
   "exclude": ["node_modules"]
 }

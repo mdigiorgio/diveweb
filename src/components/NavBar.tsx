@@ -57,7 +57,9 @@ export const NavBar: React.FC = () => {
     let newActiveSection: string | null = null;
 
     for (let i = scrollableSections.length - 1; i >= 0; i--) {
-      const sec: Section = scrollableSections[i];
+      const sec: Section | undefined = scrollableSections[i];
+      if (!sec) continue;
+
       const element: HTMLElement | null = document.getElementById(sec.id);
       if (element && scrollY >= element.offsetTop) {
         newActiveSection = sec.id;

@@ -74,7 +74,7 @@ export default function GallerySection(): React.ReactElement {
       }
     }
     fetchVideos();
-  }, [youtubeURL]);
+  }, [API_KEY, UPLOADS_PLAYLIST_ID, isMobile, youtubeURL]);
 
   const handleViewMore = () => {
     window.open(youtubeURL, "_blank");
