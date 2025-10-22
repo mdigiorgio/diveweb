@@ -9,6 +9,7 @@ import { NavBar } from "@/components/NavBar";
 import ThemeWrapper from "@/components/ThemeWrapper";
 import { UserProvider } from "@auth0/nextjs-auth0/client"; // Works in Next.js 13-15 App Router
 import { ScrollToHash } from "@/components/ScrollToHash";
+import SocialFloatingIcon from "@/components/SocialFloatingIcon";
 
 import type { Metadata } from "next";
 
@@ -46,6 +47,7 @@ export default function RootLayout({
               {children}
             </Box>
             <Footer />
+            <SocialFloatingIcon />
           </ThemeWrapper>
         </UserProvider>
       </body>
