@@ -1,18 +1,20 @@
+// src/app/reviews/ReviewsList.tsx
+
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState } from "react";
 import {
   Avatar,
   Box,
+  Button,
   CircularProgress,
-  IconButton,
   Rating,
   Stack,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
-
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import Masonry from "@mui/lab/Masonry";
 
 interface Review {
   id: string;
@@ -24,22 +26,13 @@ interface Review {
   content: string;
 }
 
-const CARD_GRADIENT_START = "#e3f2fd"; // light blue
-const CARD_GRADIENT_END = "#bbdefb"; // medium blue
-const BORDER_COLOR = "#4fc3f7"; // accent border blue
-
 function ReviewItem({ review }: { review: Review }) {
   return (
     <Box
-      className="review-item-card"
       sx={{
-        flexShrink: 0,
-        scrollSnapAlign: "start",
-        width: { xs: 320, sm: 380, md: 450 },
-        marginRight: { xs: 3, sm: 4, md: 5 },
         p: 2.5,
         borderRadius: 2,
-        background: `linear-gradient(145deg, ${CARD_GRADIENT_START}, ${CARD_GRADIENT_END})`,
+        background: `linear-gradient(145deg, #e3f2fd, #bbdefb)`,
         boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
         transition: "all 0.3s ease",
         "&:hover": {
@@ -53,14 +46,13 @@ function ReviewItem({ review }: { review: Review }) {
           src={review.avatar_url || "/images/default-avatar.jpg"}
           alt={review.name}
           onError={(e) => {
-            // fallback if Google blocks or 429s
             (e.currentTarget as HTMLImageElement).src =
               "/images/default-avatar.jpg";
           }}
           sx={{
             width: 48,
             height: 48,
-            border: `2px solid ${BORDER_COLOR}`,
+            border: `2px solid #4fc3f7`,
           }}
         />
         <Box sx={{ flex: 1 }}>
@@ -99,58 +91,10 @@ export default function ReviewsList({
   reviews: Review[];
   loading: boolean;
   error: string | null;
-}) {
-  const sliderRef = useRef<HTMLDivElement | null>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-
-  const updateButtonState = useCallback(() => {
-    const slider = sliderRef.current;
-    if (!slider) return;
-
-    const { scrollLeft, scrollWidth, clientWidth } = slider;
-    const tolerance = 2;
-
-    setCanScrollLeft(scrollLeft > tolerance);
-    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - tolerance);
-  }, []);
-
-  const scrollToStep = (direction: number) => {
-    const slider = sliderRef.current;
-    if (!slider) return;
-
-    const itemElement = slider.querySelector(
-      ".review-item-card",
-    ) as HTMLElement | null;
-    if (!itemElement) return;
-
-    const MARGIN_SIZE_PX = 40;
-    const distance = itemElement.offsetWidth + MARGIN_SIZE_PX;
-
-    slider.scrollBy({ left: distance * direction, behavior: "smooth" });
-
-    // Force update after scroll finishes (to re-enable the back button)
-    setTimeout(updateButtonState, 400);
-  };
-
-  // --- 3. Effects (Mount, Scroll, and Resize) ---
-  useEffect(() => {
-    const slider = sliderRef.current;
-    if (!slider) return;
-
-    const handle = () => updateButtonState();
-
-    slider.addEventListener("scroll", handle);
-    window.addEventListener("resize", handle);
-
-    // Call once immediately after mount and after reviews change
-    handle();
-
-    return () => {
-      slider.removeEventListener("scroll", handle);
-      window.removeEventListener("resize", handle);
-    };
-  }, [reviews.length, updateButtonState]);
+}): React.ReactElement {
+  const theme = useTheme();
+  const isMobile: boolean = useMediaQuery(theme.breakpoints.down("sm"));
+  const [showAll, setShowAll] = useState<boolean>(false);
 
   if (loading) {
     return (
@@ -168,71 +112,46 @@ export default function ReviewsList({
     );
   }
 
+  const maxVisible: number = isMobile ? 3 : 9;
+  const visibleReviews: Review[] = showAll
+    ? reviews
+    : reviews.slice(0, maxVisible);
+  const columns: number = isMobile ? 1 : 3;
+
   return (
-    <Box sx={{ mt: 2, width: "100%", px: { xs: 2, sm: 3, md: 0 } }}>
-      <Box sx={{ position: "relative" }}>
-        <IconButton
-          onClick={() => scrollToStep(-1)}
-          disabled={!canScrollLeft}
-          sx={{
-            position: "absolute",
-            left: 0,
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-            zIndex: 10,
-            bgcolor: "white",
-            boxShadow: 3,
-            display: { xs: "none", md: "flex" },
-            "&:hover": { bgcolor: "grey.50" },
-            opacity: canScrollLeft ? 1 : 0.5,
-            transition: "opacity 0.3s",
-          }}
-          aria-label="previous review"
-        >
-          <ChevronLeftIcon />
-        </IconButton>
+    <Box sx={{ mt: 3 }}>
+      <Masonry columns={columns} spacing={3}>
+        {visibleReviews.map((r) => (
+          <ReviewItem key={r.id} review={r} />
+        ))}
+      </Masonry>
 
-        <IconButton
-          onClick={() => scrollToStep(1)}
-          disabled={!canScrollRight}
-          sx={{
-            position: "absolute",
-            right: 0,
-            top: "50%",
-            transform: "translate(50%, -50%)",
-            zIndex: 10,
-            bgcolor: "white",
-            boxShadow: 3,
-            display: { xs: "none", md: "flex" },
-            "&:hover": { bgcolor: "grey.50" },
-            opacity: canScrollRight ? 1 : 0.5,
-            transition: "opacity 0.3s",
-          }}
-          aria-label="next review"
-        >
-          <ChevronRightIcon />
-        </IconButton>
-
-        {/* Scrollable slider */}
-        <Box
-          ref={sliderRef}
-          sx={{
-            display: "flex",
-            overflowX: "scroll",
-            scrollSnapType: "x mandatory",
-            scrollBehavior: "smooth",
-            px: { xs: 2, sm: 0 },
-            py: 1,
-            "&::-webkit-scrollbar": { display: "none" },
-            msOverflowStyle: "none",
-            scrollbarWidth: "none",
-          }}
-        >
-          {reviews.map((r) => (
-            <ReviewItem key={r.id} review={r} />
-          ))}
+      {reviews.length > maxVisible && (
+        <Box sx={{ textAlign: "center", mt: 4 }}>
+          <Button
+            variant="outlined"
+            onClick={() => setShowAll(!showAll)}
+            sx={{
+              textTransform: "none",
+              borderRadius: 2,
+              px: 4,
+              py: 1,
+              fontSize: "1rem",
+              background: showAll
+                ? "linear-gradient(135deg, #caf0f8, #ade8f4)"
+                : "linear-gradient(135deg, #0077b6, #00b4d8)",
+              color: showAll ? "#0077b6" : "#fff",
+              "&:hover": {
+                background: showAll
+                  ? "linear-gradient(135deg, #90e0ef, #caf0f8)"
+                  : "linear-gradient(135deg, #00b4d8, #90e0ef)",
+              },
+            }}
+          >
+            {showAll ? "Show Less" : "Show More Reviews"}
+          </Button>
         </Box>
-      </Box>
+      )}
     </Box>
   );
 }
