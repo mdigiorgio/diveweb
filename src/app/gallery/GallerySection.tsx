@@ -77,7 +77,10 @@ export default function GallerySection(): React.ReactElement {
   }, [API_KEY, UPLOADS_PLAYLIST_ID, isMobile, youtubeURL]);
 
   const handleViewMore = () => {
-    window.open(youtubeURL, "_blank");
+    window.open(
+      `https://www.youtube.com/playlist?list=${UPLOADS_PLAYLIST_ID}`,
+      "_blank",
+    );
   };
 
   return (
