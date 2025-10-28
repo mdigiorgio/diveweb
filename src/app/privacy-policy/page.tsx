@@ -58,14 +58,19 @@ We do **not** sell or use your information for advertising.
 
 ## 3. Data Sharing & Disclosure
 
-We share data only when necessary:
+We may share your data only with trusted third parties who help us operate our
+services, including:
 
-- **Public Display:** Your name, avatar, review, and rating may appear publicly on the site.
-- **Service Providers:**
-  - **Auth0** — for authentication and identity management.
-  - **Supabase** — for storing and managing review data.
-  - **Google Analytics** — for anonymous site usage analytics.
-- **Legal Compliance:** When required by law or public authorities.
+- **Auth0** — for authentication and identity management.
+- **Supabase** — for storing and managing review data.
+- **Google Analytics** — for anonymous site usage analytics.
+
+All third-party providers are required to protect your data and comply with
+applicable privacy laws.
+
+If we link to other websites, please note that we are not responsible for the
+privacy practices of those external sites. We encourage you to review their
+policies before sharing any personal information.
 
 ---
 
@@ -89,23 +94,67 @@ To exercise these rights, contact us at **\${LEGAL_CONTACT_EMAIL}**.
 
 ---
 
-## 6. Cookies
+## 6. International Data Transfers
 
-We use cookies to improve user experience and manage authentication sessions.
-You may disable cookies in your browser settings, but some website features may not function properly as a result.
+Some of our service providers may process data outside the European Union. When
+this occurs, we ensure that appropriate safeguards are in place.
+
+Specifically, providers such as Auth0, Supabase, and Google Analytics rely on
+the European Commission’s Standard Contractual Clauses (SCCs) or other approved
+mechanisms to ensure that your personal data remains protected according to EU
+standards.
+
+This means that even if your data is processed outside the EU, it is handled in
+compliance with GDPR requirements.
 
 ---
 
-## 7. Changes to This Policy
+## 7. Cookies
+
+Our website uses cookies to enhance your browsing experience.
+
+- Essential cookies: Needed for basic website functionality.
+- Analytics cookies: Help us understand how visitors use our site.
+- Preference cookies: Store your language and display settings.
+- Marketing cookies: May be used to deliver relevant content.
+
+You can control or disable cookies in your browser settings. A cookie consent
+banner allows you to accept or reject non-essential cookies at any time.
+
+---
+
+## 8. Changes to This Policy
 
 We may update this Privacy Policy periodically.
 Any updates will be posted on this page, and the “Effective Date” will be revised accordingly.
 
 ---
 
-## 8. Contact Information
+## 9. Data Security
 
-Questions about this Privacy Policy or your data rights can be sent to **\${LEGAL_CONTACT_EMAIL}**.`;
+We use appropriate technical and organizational measures to protect your
+information from unauthorized access, alteration, or disclosure. However, no
+online system is completely secure, and we cannot guarantee absolute
+protection.
+
+---
+
+## 10. Updates to this Policy
+
+We may update this Privacy Policy periodically to reflect changes in our
+practices or legal obligations. Any updates will be posted on this page with a
+revised effective date.
+
+You have the right to access, rectify, erase, restrict, or object to the
+processing of your personal data, the right to data portability, and the right
+to withdraw consent at any time.
+
+---
+
+## 11. Contact Information
+
+Questions about this Privacy Policy or your data rights can be sent to
+**\${LEGAL_CONTACT_EMAIL}**.`;
 
 export default function PrivacyPolicyPage() {
   return (
