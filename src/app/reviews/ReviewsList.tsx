@@ -26,7 +26,32 @@ interface Review {
   content: string;
 }
 
-function ReviewItem({ review }: { review: Review }) {
+function ReviewItem({
+  review,
+  isMobile,
+}: {
+  review: Review;
+  isMobile: boolean;
+}) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const wordThreshold: number = isMobile ? 50 : 150;
+  const words: string[] = review.content.split(/\s+/);
+  const wordCount: number = words.length;
+  const isTruncatable: boolean = wordCount > wordThreshold;
+
+  // We'll put the logic directly inside the Typography component
+  const truncatedText: string = words.slice(0, wordThreshold).join(" ");
+
+  const formattedDate: string = new Date(review.inserted_at).toLocaleDateString(
+    "en-GB", // 'en-GB' locale consistently gives dd/mm/yyyy
+    {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    },
+  );
+
   return (
     <Box
       sx={{
@@ -62,7 +87,7 @@ function ReviewItem({ review }: { review: Review }) {
           <Stack direction="row" spacing={1} alignItems="center">
             <Rating value={review.stars} readOnly size="small" />
             <Typography variant="caption" color="text.secondary">
-              {new Date(review.inserted_at).toLocaleDateString()}
+              {formattedDate}
             </Typography>
           </Stack>
         </Box>
@@ -77,7 +102,36 @@ function ReviewItem({ review }: { review: Review }) {
           lineHeight: 1.6,
         }}
       >
-        {review.content}
+        {isTruncatable && !isExpanded ? (
+          <>
+            {truncatedText}
+            {"... "}
+            <Button
+              onClick={() => setIsExpanded(true)} // One-way click
+              size="small"
+              sx={{
+                p: 0,
+                m: 0,
+                minWidth: "auto", // Removes default padding
+                display: "inline", // Makes it flow with text
+                fontWeight: "bold",
+                color: "primary.main",
+                lineHeight: "inherit", // Matches the <Typography>
+                verticalAlign: "baseline", // Aligns with text
+                textTransform: "none",
+                "&:hover": {
+                  background: "none",
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              More
+            </Button>
+          </>
+        ) : (
+          // If not truncatable OR already expanded, show full content
+          review.content
+        )}
       </Typography>
     </Box>
   );
@@ -118,13 +172,19 @@ export default function ReviewsList({
     : reviews.slice(0, maxVisible);
   const columns: number = isMobile ? 1 : 3;
 
+  const reviewItems = visibleReviews.map((r) => (
+    <ReviewItem key={r.id} review={r} isMobile={isMobile} />
+  ));
+
   return (
     <Box sx={{ mt: 3 }}>
-      <Masonry columns={columns} spacing={3}>
-        {visibleReviews.map((r) => (
-          <ReviewItem key={r.id} review={r} />
-        ))}
-      </Masonry>
+      {isMobile ? (
+        <Stack spacing={3}>{reviewItems}</Stack>
+      ) : (
+        <Masonry columns={columns} spacing={3}>
+          {reviewItems}
+        </Masonry>
+      )}
 
       {reviews.length > maxVisible && (
         <Box sx={{ textAlign: "center", mt: 4 }}>
